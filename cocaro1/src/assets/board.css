@@ -1,0 +1,71 @@
+body {
+  font: 34px "Century Gothic", Futura, sans-serif;
+}
+.room-game {
+  height: 100vh;
+  width: 100%;
+}
+.avatar {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+.chat-box {
+  width: 500px;
+  border-radius: 15px;
+  height: 30vh;
+  position: absolute;
+  top: 363px;
+  left: 68px;
+}
+.chat-box-item {
+  height: 22vh;
+}
+
+ol,
+ul {
+  padding-left: 50px;
+}
+
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.status {
+  margin-bottom: 10px;
+}
+
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 54px;
+  font-weight: bold;
+  line-height: 64px;
+  height: 64px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 64px;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.game {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.game-info {
+  margin-left: 20px;
+}
