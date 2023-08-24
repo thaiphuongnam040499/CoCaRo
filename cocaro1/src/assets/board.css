@@ -1,9 +1,10 @@
-body {
+/* body {
   font: 34px "Century Gothic", Futura, sans-serif;
-}
+} */
 .room-game {
   height: 100vh;
   width: 100%;
+  padding-bottom: 60px;
 }
 .avatar {
   border-radius: 50%;
@@ -11,9 +12,9 @@ body {
   height: 100px;
 }
 .chat-box {
-  width: 500px;
+  width: 400px;
   border-radius: 15px;
-  height: 30vh;
+  height: 35vh;
   position: absolute;
   top: 363px;
   left: 68px;
@@ -21,49 +22,28 @@ body {
 .chat-box-item {
   height: 22vh;
 }
-
-ol,
-ul {
-  padding-left: 50px;
+.game-board {
+  border: 1px solid #ccc;
 }
 
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
-}
-
-.status {
-  margin-bottom: 10px;
+.board-row {
+  display: flex;
 }
 
 .square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 54px;
-  font-weight: bold;
-  line-height: 64px;
-  height: 64px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 64px;
-}
-
-.square:focus {
-  outline: none;
-}
-
-.kbd-navigation .square:focus {
-  background: #ddd;
-}
-
-.game {
+  width: 30px;
+  height: 30px;
   display: flex;
-  flex-direction: row;
-  position: relative;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  border: 1px solid #999;
+  cursor: pointer;
+}
+
+.square:hover {
+  background-color: #f0f0f0;
 }
 
 .game-info {

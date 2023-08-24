@@ -13,6 +13,20 @@
       "id": 2
     }
   ],
-  "rooms": [],
-  "members": []
+  "rooms": [
+    {
+      "roomName": "123",
+      "roomPass": "1",
+      "userId": 1,
+      "createdAt": 1692849863014,
+      "id": 1
+    },
+    {
+      "roomName": "abc",
+      "roomPass": "1",
+      "userId": 1,
+      "createdAt": 1692849902402,
+      "id": 2
+    }
+  ]
 }
