@@ -6,7 +6,8 @@ export const ROOM_GET_SERVICE = async () => {
 };
 
 export const ROOM_POST_SERVICE = async (data) => {
-  await intances.post("rooms", data);
+  let response = await intances.post("rooms", data);
+  return response.data;
 };
 
 export const ROOM_DELETE_SERVICE = async (id) => {

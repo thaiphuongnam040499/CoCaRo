@@ -4,28 +4,39 @@
       "username": "thainam",
       "password": "123456",
       "createdAt": 1692760783442,
-      "id": 1
+      "id": 1,
+      "type": ""
     },
     {
       "username": "nhantic",
       "password": "123",
       "createdAt": 1692784436031,
-      "id": 2
+      "id": 2,
+      "type": ""
     }
   ],
   "rooms": [
     {
-      "roomName": "123",
-      "roomPass": "1",
-      "userId": 1,
-      "createdAt": 1692849863014,
+      "roomName": "asd",
+      "roomPass": "asd",
+      "userId": 2,
+      "createdAt": 1692872674194,
+      "id": 1
+    }
+  ],
+  "members": [
+    {
+      "roomId": 1,
+      "userId": 2,
+      "role": "CHU PHONG",
+      "createdAt": 1692872678746,
       "id": 1
     },
     {
-      "roomName": "abc",
-      "roomPass": "1",
-      "userId": 1,
-      "createdAt": 1692849902402,
+      "roomId": 1,
+      "userId": 2,
+      "role": "THANH VIEN",
+      "createdAt": 1692872736115,
       "id": 2
     }
   ]

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../assets/home.css";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { createRoom } from "../../redux/reducer/roomSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { createRoom, resetRoom } from "../../redux/reducer/roomSlice";
 import SearchRoom from "../../components/SearchRoom";
+import { Role } from "../../enums/Role";
+import { createMember } from "../../redux/reducer/memberSlice";
 
 export default function Home() {
   const [roomName, setRoomName] = useState("");
@@ -11,6 +13,30 @@ export default function Home() {
   const userLogin = JSON.parse(localStorage.getItem("userLogin"));
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const currentCreateRoom = useSelector((state) => state.room.room);
+  console.log(currentCreateRoom);
+
+  const createMemberAd = () => {
+    if (!userLogin) {
+      return;
+    }
+    if (!currentCreateRoom) {
+      return;
+    }
+    let member = {
+      roomId: currentCreateRoom.id,
+      userId: userLogin.id,
+      role: Role.ADMIN,
+    };
+    dispatch(createMember(member));
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      createMemberAd();
+    }, 1000);
+    dispatch(resetRoom());
+  }, [currentCreateRoom]);
 
   const handleLogout = () => {
     localStorage.removeItem("userLogin");
@@ -25,6 +51,8 @@ export default function Home() {
     };
     dispatch(createRoom(room));
     navigate("/room");
+    setRoomName("");
+    setRoomPass("");
   };
 
   return (

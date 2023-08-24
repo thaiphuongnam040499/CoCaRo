@@ -19,6 +19,11 @@ socketIo.on("connection", (socket) => {
     socketIo.emit("sendDataServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
   });
 
+  socket.on("sendDataClientMess", function (data) {
+    // Handle khi có sự kiện tên là sendDataClient từ phía client
+    socketIo.emit("sendDataServerMess", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+  });
+
   socket.on("disconnect", () => {
     console.log("Client disconnected"); // Khi client disconnect thì log ra terminal.
   });

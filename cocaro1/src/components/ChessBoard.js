@@ -20,7 +20,6 @@ export default function ChessBoard() {
   }, []);
 
   const socketRef = useRef();
-  const messagesEnd = useRef();
 
   useEffect(() => {
     socketRef.current = socketIOClient.connect(host);
@@ -38,8 +37,10 @@ export default function ChessBoard() {
     if (board[row][col] || calculateWinner(board)) {
       return;
     }
-    const newBoard = board.map((r, i) =>
-      i === row ? r.map((c, j) => (j === col ? (xIsNext ? "X" : "O") : c)) : r
+    const newBoard = board.map((r, indexR) =>
+      indexR === row
+        ? r.map((c, indexC) => (indexC === col ? (xIsNext ? "X" : "O") : c))
+        : r
     );
     socketRef.current.emit("sendDataClient", newBoard);
     setXIsNext(!xIsNext);

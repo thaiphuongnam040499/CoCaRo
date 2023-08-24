@@ -4,7 +4,7 @@ import {
   ROOM_GET_SERVICE,
   ROOM_POST_SERVICE,
 } from "../api/roomService";
-import { getAllRoom } from "../redux/reducer/roomSlice";
+import { findCreateRoom, getAllRoom } from "../redux/reducer/roomSlice";
 
 export const ROOM_SAGA_GET = function* () {
   try {
@@ -17,7 +17,8 @@ export const ROOM_SAGA_GET = function* () {
 
 export const ROOM_SAGA_POST = function* (action) {
   try {
-    yield call(ROOM_POST_SERVICE, action.payload);
+    let room = yield call(ROOM_POST_SERVICE, action.payload);
+    yield put(findCreateRoom(room));
   } catch (error) {
     console.log(error);
   }

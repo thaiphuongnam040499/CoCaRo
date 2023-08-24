@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { findAllRoom } from "../redux/reducer/roomSlice";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { createMember } from "../redux/reducer/memberSlice";
+import { Role } from "../enums/Role";
 
 export default function SearchRoom() {
   const [roomName, setRoomName] = useState("");
@@ -10,6 +12,7 @@ export default function SearchRoom() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const rooms = useSelector((state) => state.room.listRoom);
+  const userLogin = JSON.parse(localStorage.getItem("userLogin"));
 
   const roomSearch = rooms.find(
     (room) => room.roomName === roomName && roomPass === room.roomPass
@@ -17,6 +20,12 @@ export default function SearchRoom() {
 
   const handleJoinRoom = () => {
     if (roomSearch) {
+      let member = {
+        roomId: roomSearch.id,
+        userId: userLogin.id,
+        role: Role.MEMBER,
+      };
+      dispatch(createMember(member));
       navigate("/room");
     } else {
       toast.error("Phong khong ton tai");

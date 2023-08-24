@@ -14,7 +14,7 @@
 .chat-box {
   width: 400px;
   border-radius: 15px;
-  height: 35vh;
+  height: 40vh;
   position: absolute;
   top: 363px;
   left: 68px;
@@ -28,6 +28,11 @@
 
 .board-row {
   display: flex;
+}
+.message {
+  background-color: #336be4;
+  border-radius: 15px;
+  height: 35px;
 }
 
 .square {
@@ -48,4 +53,69 @@
 
 .game-info {
   margin-left: 20px;
+}
+
+.chat-item {
+  width: 50%;
+}
+.your-message {
+  background: #009bff;
+  margin: 8px;
+  border-radius: 1em;
+  padding: 8px;
+  color: white;
+  float: right;
+}
+
+.other-people {
+  background: #868686;
+  margin: 8px;
+  border-radius: 1em;
+  padding: 8px;
+  color: white;
+  text-align: left;
+  float: left;
+}
+
+.box-chat_message {
+  min-height: 25vh;
+  max-height: 25vh;
+  overflow-y: auto;
+}
+.box-chat {
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 100px;
+  box-shadow: 0 0 10px 0 black;
+  border-radius: 1em;
+}
+
+.send-box {
+  width: 100%;
+  padding: 1em;
+}
+
+textarea:focus {
+  outline: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #dadada;
+  border-radius: 1em;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

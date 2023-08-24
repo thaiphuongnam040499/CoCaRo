@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   listRoom: [],
+  room: null,
 };
 
 const roomSlice = createSlice({
@@ -14,8 +15,20 @@ const roomSlice = createSlice({
     },
     createRoom: (state, action) => {},
     deleteRoom: (state, action) => {},
+    findCreateRoom: (state, action) => {
+      state.room = action.payload;
+    },
+    resetRoom: (state) => {
+      state.room = null;
+    },
   },
 });
 export default roomSlice.reducer;
-export const { findAllRoom, getAllRoom, createRoom, deleteRoom } =
-  roomSlice.actions;
+export const {
+  findAllRoom,
+  getAllRoom,
+  createRoom,
+  deleteRoom,
+  findCreateRoom,
+  resetRoom,
+} = roomSlice.actions;
