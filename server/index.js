@@ -30,5 +30,5 @@ socketIo.on("connection", (socket) => {
 });
 
 server.listen(4002, () => {
-  console.log("Server đang chay 4002");
+  console.log("Server đang chay 4002 h");
 });

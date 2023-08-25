@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import "../../assets/home.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createRoom, resetRoom } from "../../redux/reducer/roomSlice";
+import { createRoom, findAllRoom } from "../../redux/reducer/roomSlice";
 import SearchRoom from "../../components/SearchRoom";
-import { Role } from "../../enums/Role";
-import { createMember } from "../../redux/reducer/memberSlice";
+import store from "../../redux/store";
 
 export default function Home() {
   const [roomName, setRoomName] = useState("");
@@ -14,50 +13,57 @@ export default function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentCreateRoom = useSelector((state) => state.room.room);
-  console.log(currentCreateRoom);
-
-  const createMemberAd = () => {
-    if (!userLogin) {
-      return;
-    }
-    if (!currentCreateRoom) {
-      return;
-    }
-    let member = {
-      roomId: currentCreateRoom.id,
-      userId: userLogin.id,
-      role: Role.ADMIN,
-    };
-    dispatch(createMember(member));
-  };
-  useEffect(() => {
-    setTimeout(() => {
-      createMemberAd();
-    }, 1000);
-    dispatch(resetRoom());
-  }, [currentCreateRoom]);
-
   const handleLogout = () => {
     localStorage.removeItem("userLogin");
     navigate("/");
   };
 
-  const handleCreateRoom = () => {
+  useEffect(() => {
+    dispatch(findAllRoom());
+  }, []);
+  const createdRoom = useSelector((state) => state.room.room); // Thay thế bằng selector thực tế của bạn
+
+  const handleCreateRoom = async () => {
     let room = {
       roomName: roomName,
       roomPass: roomPass,
       userId: userLogin.id,
+      playerId: null,
+      currentUserId: null,
+      status: 1,
+      dataChess: [
+        {
+          userId: null,
+          type: "",
+          dirX: null,
+          dirY: null,
+        },
+      ],
     };
-    dispatch(createRoom(room));
-    navigate("/room");
-    setRoomName("");
-    setRoomPass("");
+    await dispatch(createRoom(room)); // Đợi cho createRoom hoàn thành
+
+    // Lắng nghe sự kiện thay đổi trong store
+    const unsubscribe = store.subscribe(() => {
+      const state = store.getState(); // Lấy state hiện tại từ store
+      const createdRoom = state.room.room;
+      if (createdRoom) {
+        navigate(`/room/${createdRoom.id}`);
+        setRoomName("");
+        setRoomPass("");
+        // Hủy đăng ký lắng nghe
+        unsubscribe();
+      }
+    });
   };
 
   return (
     <div className="w-100 d-flex justify-content-center btn-home align-items-center bg-dark ">
       <div className="w-25">
+        <div>
+          <button className="btn btn-warning btn-rounded mb-3 w-100">
+            Choi voi may
+          </button>
+        </div>
         <div>
           <div className="dropdown">
             <button

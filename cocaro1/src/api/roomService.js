@@ -5,9 +5,13 @@ export const ROOM_GET_SERVICE = async () => {
   return response.data;
 };
 
-export const ROOM_POST_SERVICE = async (data) => {
-  let response = await intances.post("rooms", data);
+export const ROOM_POST_SERVICE = async (room) => {
+  let response = await intances.post("rooms", room);
   return response.data;
+};
+
+export const ROOM_PATCH_SERVICE = async (data) => {
+  await intances.patch("rooms/" + data.id, data);
 };
 
 export const ROOM_DELETE_SERVICE = async (id) => {

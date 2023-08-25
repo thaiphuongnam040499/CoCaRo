@@ -16,8 +16,8 @@ export default function App() {
           <Route path="register" element={<Register />} />
         </Route>
         <Route element={<MainLayout />}>
-          <Route path="home" element={<Home />} />
-          <Route path="room" element={<Room />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/room/:id" element={<Room />} />
         </Route>
       </Routes>
     </div>

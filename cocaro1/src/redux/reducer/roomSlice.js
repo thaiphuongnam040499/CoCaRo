@@ -18,9 +18,7 @@ const roomSlice = createSlice({
     findCreateRoom: (state, action) => {
       state.room = action.payload;
     },
-    resetRoom: (state) => {
-      state.room = null;
-    },
+    updateRoom: (state, action) => {},
   },
 });
 export default roomSlice.reducer;
@@ -30,5 +28,5 @@ export const {
   createRoom,
   deleteRoom,
   findCreateRoom,
-  resetRoom,
+  updateRoom,
 } = roomSlice.actions;

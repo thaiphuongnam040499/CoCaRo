@@ -5,10 +5,14 @@ import {
   createRoom,
   deleteRoom,
   findAllRoom,
+  updateRoom,
 } from "../redux/reducer/roomSlice";
-import { ROOM_SAGA_DELETE, ROOM_SAGA_GET, ROOM_SAGA_POST } from "./roomSaga";
-import { createMember, findAllMember } from "../redux/reducer/memberSlice";
-import { MEMBER_SAGA_GET, MEMBER_SAGA_POST } from "./memberSaga";
+import {
+  ROOM_SAGA_DELETE,
+  ROOM_SAGA_GET,
+  ROOM_SAGA_PATCH,
+  ROOM_SAGA_POST,
+} from "./roomSaga";
 
 export const rootSaga = function* () {
   yield all([
@@ -18,9 +22,7 @@ export const rootSaga = function* () {
     // room
     takeLatest(findAllRoom.type, ROOM_SAGA_GET),
     takeLatest(createRoom.type, ROOM_SAGA_POST),
+    takeLatest(updateRoom.type, ROOM_SAGA_PATCH),
     takeLatest(deleteRoom.type, ROOM_SAGA_DELETE),
-    // member
-    takeLatest(findAllMember.type, MEMBER_SAGA_GET),
-    takeLatest(createMember.type, MEMBER_SAGA_POST),
   ]);
 };

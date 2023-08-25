@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { findAllRoom } from "../redux/reducer/roomSlice";
+
 import socketIOClient from "socket.io-client";
 
 const host = "http://localhost:4002";
@@ -10,14 +10,10 @@ const WIN_LENGTH = 5;
 
 export default function ChessBoard() {
   const [board, setBoard] = useState(Array(ROWS).fill(Array(COLS).fill(null)));
-  const [xIsNext, setXIsNext] = useState(true);
   const userLogin = JSON.parse(localStorage.getItem("userLogin"));
-  const rooms = useSelector((state) => state.room.listRoom);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(findAllRoom());
-  }, []);
+  const rooms = useSelector((state) => state.room.listRoom);
+  const room = rooms.find((room) => room.userId === userLogin.id);
 
   const socketRef = useRef();
 
@@ -39,11 +35,11 @@ export default function ChessBoard() {
     }
     const newBoard = board.map((r, indexR) =>
       indexR === row
-        ? r.map((c, indexC) => (indexC === col ? (xIsNext ? "X" : "O") : c))
+        ? r.map((c, indexC) => (indexC === col ? (room ? "X" : "O") : c))
         : r
     );
+    // Gửi nước đi mới đến máy chủ
     socketRef.current.emit("sendDataClient", newBoard);
-    setXIsNext(!xIsNext);
   };
 
   const renderSquare = (row, col) => (
@@ -68,7 +64,7 @@ export default function ChessBoard() {
   const winner = calculateWinner(board);
   const status = winner
     ? `Winner: ${winner}`
-    : `Next player: ${xIsNext ? "X" : "O"}`;
+    : `Next player: ${room ? "X" : "O"}`;
   return (
     <div className="d-flex justify-content-center align-items-center mt-5">
       <div className="game">

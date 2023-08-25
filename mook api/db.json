@@ -4,40 +4,33 @@
       "username": "thainam",
       "password": "123456",
       "createdAt": 1692760783442,
-      "id": 1,
-      "type": ""
+      "id": 1
     },
     {
       "username": "nhantic",
       "password": "123",
       "createdAt": 1692784436031,
-      "id": 2,
-      "type": ""
+      "id": 2
     }
   ],
   "rooms": [
     {
-      "roomName": "asd",
-      "roomPass": "asd",
-      "userId": 2,
-      "createdAt": 1692872674194,
+      "roomName": "123",
+      "roomPass": "1",
+      "userId": 1,
+      "playerId": null,
+      "currentUserId": null,
+      "status": 1,
+      "dataChess": [
+        {
+          "userId": null,
+          "type": "",
+          "dirX": null,
+          "dirY": null
+        }
+      ],
+      "createdAt": 1692956667880,
       "id": 1
-    }
-  ],
-  "members": [
-    {
-      "roomId": 1,
-      "userId": 2,
-      "role": "CHU PHONG",
-      "createdAt": 1692872678746,
-      "id": 1
-    },
-    {
-      "roomId": 1,
-      "userId": 2,
-      "role": "THANH VIEN",
-      "createdAt": 1692872736115,
-      "id": 2
     }
   ]
 }
