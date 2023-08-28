@@ -28,6 +28,7 @@ export const ROOM_SAGA_POST = function* (action) {
 export const ROOM_SAGA_PATCH = function* (action) {
   try {
     yield call(ROOM_PATCH_SERVICE, action.payload);
+    yield ROOM_SAGA_GET();
   } catch (error) {
     console.log(error);
   }
@@ -36,6 +37,7 @@ export const ROOM_SAGA_PATCH = function* (action) {
 export const ROOM_SAGA_DELETE = function* (action) {
   try {
     yield call(ROOM_DELETE_SERVICE, action.payload);
+    yield ROOM_SAGA_GET();
   } catch (error) {
     console.log(error);
   }

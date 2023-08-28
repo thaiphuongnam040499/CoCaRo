@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { findAllRoom } from "../redux/reducer/roomSlice";
+import { findAllRoom, updateRoom } from "../redux/reducer/roomSlice";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -18,6 +18,12 @@ export default function SearchRoom() {
 
   const handleJoinRoom = () => {
     if (roomSearch) {
+      dispatch(
+        updateRoom({
+          ...roomSearch,
+          playerId: userLogin.id,
+        })
+      );
       navigate(`/room/${roomSearch.id}`);
     } else {
       toast.error("Phong khong ton tai");

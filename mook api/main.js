@@ -38,5 +38,5 @@ server.use((req, res, next) => {
 // Use default router
 server.use("/api", router);
 server.listen(5000, () => {
-  console.log("JSON Server running");
+  console.log("JSON Server running 5000");
 });

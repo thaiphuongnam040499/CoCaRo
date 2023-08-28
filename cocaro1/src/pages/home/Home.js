@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../assets/home.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createRoom, findAllRoom } from "../../redux/reducer/roomSlice";
 import SearchRoom from "../../components/SearchRoom";
@@ -31,14 +31,7 @@ export default function Home() {
       playerId: null,
       currentUserId: null,
       status: 1,
-      dataChess: [
-        {
-          userId: null,
-          type: "",
-          dirX: null,
-          dirY: null,
-        },
-      ],
+      dataChess: null,
     };
     await dispatch(createRoom(room)); // Đợi cho createRoom hoàn thành
 

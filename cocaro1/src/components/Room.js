@@ -5,25 +5,29 @@ import {
   findAllRoom,
   updateRoom,
 } from "../redux/reducer/roomSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../../src/assets/board.css";
 import ChessBoard from "./ChessBoard";
 import ChatBox from "./ChatBox";
 import { findAllUser } from "../redux/reducer/userSlice";
+const ROWS = 16;
+const COLS = 16;
 
 export default function Room() {
   const userLogin = JSON.parse(localStorage.getItem("userLogin"));
   const users = useSelector((state) => state.user.listUser);
   const dispatch = useDispatch();
+  const [board, setBoard] = useState(Array(ROWS).fill(Array(COLS).fill(null)));
   const rooms = useSelector((state) => state.room.listRoom);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     dispatch(findAllRoom());
     dispatch(findAllUser());
   }, []);
 
-  const roomFind = rooms.find((room) => room.userId === userLogin.id);
+  const roomFind = rooms.find((room) => room.id === parseInt(id));
 
   const roomByPlayer = rooms.find(
     (room) => room.playerId === roomFind?.playerId
@@ -56,6 +60,15 @@ export default function Room() {
         })
       );
     }
+  };
+
+  const handlePlayAgain = () => {
+    dispatch(
+      updateRoom({
+        ...roomFind,
+        dataChess: board,
+      })
+    );
   };
 
   const renderPlayer =
@@ -114,7 +127,10 @@ export default function Room() {
             )}
           </div>
           <div className="me-2">
-            <button className="btn btn-info btn-rounded mb-3 w-100">
+            <button
+              onClick={handlePlayAgain}
+              className="btn btn-info btn-rounded mb-3 w-100"
+            >
               Choi lai
             </button>
           </div>

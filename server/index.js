@@ -19,6 +19,11 @@ socketIo.on("connection", (socket) => {
     socketIo.emit("sendDataServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
   });
 
+  socket.on("sendDisableClient", function (data) {
+    // Handle khi có sự kiện tên là sendDataClient từ phía client
+    socketIo.emit("sendDisableServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+  });
+
   socket.on("sendDataClientMess", function (data) {
     // Handle khi có sự kiện tên là sendDataClient từ phía client
     socketIo.emit("sendDataServerMess", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
@@ -30,5 +35,5 @@ socketIo.on("connection", (socket) => {
 });
 
 server.listen(4002, () => {
-  console.log("Server đang chay 4002 h");
+  console.log("Server đang chay tren cong 4002");
 });
