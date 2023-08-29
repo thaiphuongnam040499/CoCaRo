@@ -1,41 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   deleteRoom,
   findAllRoom,
   updateRoom,
 } from "../redux/reducer/roomSlice";
-import { useNavigate, useParams } from "react-router-dom";
-import "../../src/assets/board.css";
-import ChessBoard from "./ChessBoard";
-import ChatBox from "./ChatBox";
 import { findAllUser } from "../redux/reducer/userSlice";
+import PlayMachine from "./PlayMachine";
+
 const ROWS = 16;
 const COLS = 16;
 
 const BOARD_DEFAULT = Array(ROWS).fill(Array(COLS).fill(null));
 
-export default function Room() {
+export default function RoomMachine() {
   const userLogin = JSON.parse(localStorage.getItem("userLogin"));
   const users = useSelector((state) => state.user.listUser);
   const dispatch = useDispatch();
   const rooms = useSelector((state) => state.room.listRoom);
   const navigate = useNavigate();
   const { id } = useParams();
-  const [isShowChat, setIsShowChat] = useState(false);
 
   useEffect(() => {
     dispatch(findAllRoom());
     dispatch(findAllUser());
   }, []);
-
-  const handleShowChat = () => {
-    setIsShowChat(true);
-  };
-
-  const handleOffShowChat = () => {
-    setIsShowChat(false);
-  };
 
   const roomFind = rooms.find((room) => room.id === parseInt(id));
 
@@ -77,7 +67,7 @@ export default function Room() {
       updateRoom({
         ...roomFind,
         dataChess: BOARD_DEFAULT,
-        currentUserId: userLogin.id,
+        currentUserId: null,
       })
     );
   };
@@ -156,16 +146,7 @@ export default function Room() {
         </div>
         {renderPlayer}
       </div>
-      <ChessBoard />
-      <div>
-        <button
-          onClick={handleShowChat}
-          className="btn btn-light ms-3 btn-chat-box"
-        >
-          <i className="bi bi-chat me-2"></i>Chat box
-        </button>
-      </div>
-      {isShowChat ? <ChatBox handleOffShowChat={handleOffShowChat} /> : ""}
+      <PlayMachine />
     </div>
   );
 }

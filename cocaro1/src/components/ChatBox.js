@@ -4,7 +4,7 @@ import socketIOClient from "socket.io-client";
 
 const host = "http://localhost:4002";
 
-export default function ChatBox() {
+export default function ChatBox({ handleOffShowChat }) {
   const [mess, setMess] = useState([]);
   const [message, setMessage] = useState("");
   const [id, setId] = useState("");
@@ -66,7 +66,12 @@ export default function ChatBox() {
   };
   return (
     <div className="chat-box bg-light ms-3 p-3">
-      <p>Chat</p>
+      <div className="d-flex justify-content-between align-items-center">
+        <p className="p-0 m-0">Chat</p>
+        <button onClick={handleOffShowChat} className="btn btn-light">
+          <i className="bi bi-x-lg"></i>
+        </button>
+      </div>
       <div className="box-chat_message border rounded">
         {renderMess}
         <div style={{ float: "left", clear: "both" }} ref={messagesEnd}></div>

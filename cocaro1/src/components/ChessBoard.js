@@ -20,7 +20,11 @@ export default function ChessBoard() {
   const { id } = useParams();
   const room = rooms.find((room) => room.id === parseInt(id));
   const socketRef = useRef();
-  const [seconds, setSeconds] = useState(60);
+  const [currentPlayer, setCurrentPlayer] = useState("oner");
+  const [onerTime, setOnerTime] = useState(15);
+  const [playerTime, setPlayerTime] = useState(15);
+  const [onerLost, setOnerLost] = useState(false);
+  const [playerLost, setPlayerLost] = useState(false);
   const [disable, setDisable] = useState({
     oner: false,
     player: false,
@@ -36,6 +40,7 @@ export default function ChessBoard() {
       setBoard(dataGot.data);
     });
     socketRef.current.on("sendDisableServer", (dataGot) => {
+      console.log(dataGot.data);
       setDisable({
         oner: dataGot.data,
         player: !dataGot.data,
@@ -53,14 +58,44 @@ export default function ChessBoard() {
     }
   }, [room]);
 
-  const timeOut = () => {
-    const interval = setInterval(() => {
-      setSeconds((seconds) => seconds - 1);
+  useEffect(() => {
+    const onerInterval = setInterval(() => {
+      if (disable.oner && !disable.player && onerTime > 0) {
+        setPlayerTime((prevTime) => prevTime - 1);
+      }
     }, 1000);
-    if (seconds === 0) {
-      return () => clearInterval(interval);
+
+    const playerInterval = setInterval(() => {
+      if (disable.player && !disable.oner && playerTime > 0) {
+        setOnerTime((prevTime) => prevTime - 1);
+      }
+    }, 1000);
+
+    if (playerTime === 0 && !playerLost) {
+      clearInterval(playerInterval);
+      setPlayerLost(true);
+      alert("Player thua");
+      setDisable({
+        oner: true,
+        player: true,
+      });
     }
-  };
+
+    if (onerTime === 0 && !onerLost) {
+      clearInterval(onerInterval);
+      setOnerLost(true);
+      alert("Oner thua");
+      setDisable({
+        oner: true,
+        player: true,
+      });
+    }
+
+    return () => {
+      clearInterval(onerInterval);
+      clearInterval(playerInterval);
+    };
+  }, [disable, onerTime, playerTime, onerLost, playerLost]);
 
   const handleClick = (row, col) => {
     if (board[row][col] || calculateWinner(board) || winner) {
@@ -69,12 +104,12 @@ export default function ChessBoard() {
     const newBoard = board.map((r, indexR) =>
       indexR === row
         ? r.map((c, indexC) =>
-            indexC === col ? (room.userId === userLogin.id ? "X" : "O") : c
+            indexC === col ? (room?.userId === userLogin.id ? "X" : "O") : c
           )
         : r
     );
     if (!room) return;
-    const checkDisable = room?.currentUserId === userLogin.id ? true : false;
+    const checkDisable = room.currentUserId === userLogin.id ? true : false;
     socketRef.current.emit("sendDisableClient", checkDisable);
     socketRef.current.emit("sendDataClient", newBoard);
     dispatch(
@@ -84,6 +119,7 @@ export default function ChessBoard() {
         dataChess: newBoard,
       })
     );
+    setDisable((prevDisable) => ({ ...prevDisable, [currentPlayer]: true }));
   };
 
   const renderSquare = (row, col) => (
@@ -115,7 +151,9 @@ export default function ChessBoard() {
 
   const status = winner
     ? `Winner: ${winner.username}`
-    : `Luot tiep theo: ${room?.currentUserId === room?.userId ? "X" : "O"}`;
+    : `Luot tiep theo: ${currentPlayer === "oner" ? "Oner" : "Player"} - ${
+        currentPlayer === "oner" ? playerTime : onerTime
+      } seconds`;
   return (
     <div className="d-flex justify-content-center align-items-center mt-5">
       <div className="game">

@@ -11,13 +11,16 @@
   width: 100px;
   height: 100px;
 }
+.btn-chat-box {
+  position: relative;
+}
 .chat-box {
   width: 400px;
   border-radius: 15px;
   height: 40vh;
   position: absolute;
-  top: 363px;
-  left: 68px;
+  top: 450px;
+  left: 0px;
 }
 .chat-box-item {
   height: 22vh;

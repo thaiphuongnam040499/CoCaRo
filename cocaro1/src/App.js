@@ -6,6 +6,7 @@ import Register from "./pages/auth/Register";
 import MainLayout from "./layout/MainLayout";
 import Home from "./pages/home/Home";
 import Room from "./components/Room";
+import RoomMachine from "./components/RoomMachine";
 
 export default function App() {
   return (
