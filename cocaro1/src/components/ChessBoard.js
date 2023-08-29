@@ -5,6 +5,7 @@ import socketIOClient from "socket.io-client";
 import { findAllRoom, updateRoom } from "../redux/reducer/roomSlice";
 import { useParams } from "react-router-dom";
 import { findAllUser } from "../redux/reducer/userSlice";
+import { Toaster, toast } from "react-hot-toast";
 
 const host = "http://localhost:4002";
 const ROWS = 16;
@@ -29,9 +30,9 @@ export default function ChessBoard() {
     oner: false,
     player: false,
   });
-
   const userPlayer = users.find((user) => user.id === room?.playerId);
   const userOner = users.find((user) => user.id === room?.userId);
+  const winner = calculateWinner(board, userOner, userPlayer);
 
   useEffect(() => {
     socketRef.current = socketIOClient.connect(host);
@@ -62,35 +63,37 @@ export default function ChessBoard() {
     const onerInterval = setInterval(() => {
       if (disable.oner && !disable.player && onerTime > 0) {
         setPlayerTime((prevTime) => prevTime - 1);
+        setOnerTime(15);
       }
     }, 1000);
 
     const playerInterval = setInterval(() => {
       if (disable.player && !disable.oner && playerTime > 0) {
         setOnerTime((prevTime) => prevTime - 1);
+        setPlayerTime(15);
       }
     }, 1000);
+    if (!winner) {
+      if (playerTime === 0 && !playerLost) {
+        clearInterval(playerInterval);
+        setPlayerLost(true);
+        alert(`${userPlayer?.username} thua cuoc`);
+        setDisable({
+          oner: true,
+          player: true,
+        });
+      }
 
-    if (playerTime === 0 && !playerLost) {
-      clearInterval(playerInterval);
-      setPlayerLost(true);
-      alert("Player thua");
-      setDisable({
-        oner: true,
-        player: true,
-      });
+      if (onerTime === 0 && !onerLost) {
+        clearInterval(onerInterval);
+        setOnerLost(true);
+        alert(`${userOner?.username} thua cuoc`);
+        setDisable({
+          oner: true,
+          player: true,
+        });
+      }
     }
-
-    if (onerTime === 0 && !onerLost) {
-      clearInterval(onerInterval);
-      setOnerLost(true);
-      alert("Oner thua");
-      setDisable({
-        oner: true,
-        player: true,
-      });
-    }
-
     return () => {
       clearInterval(onerInterval);
       clearInterval(playerInterval);
@@ -99,6 +102,7 @@ export default function ChessBoard() {
 
   const handleClick = (row, col) => {
     if (board[row][col] || calculateWinner(board) || winner) {
+      toast.success(`${winner.username} chien thang. Ban thua cuoc`);
       return;
     }
     const newBoard = board.map((r, indexR) =>
@@ -147,15 +151,14 @@ export default function ChessBoard() {
       </div>
     ));
 
-  const winner = calculateWinner(board, userOner, userPlayer);
-
   const status = winner
     ? `Winner: ${winner.username}`
-    : `Luot tiep theo: ${currentPlayer === "oner" ? "Oner" : "Player"} - ${
-        currentPlayer === "oner" ? playerTime : onerTime
-      } seconds`;
+    : `Luot tiep theo: ${
+        disable.oner ? `${userPlayer?.username}` : `${userOner?.username}`
+      } - ${disable.oner ? playerTime : onerTime} seconds`;
   return (
     <div className="d-flex justify-content-center align-items-center mt-5">
+      <Toaster />
       <div className="game">
         <div className="game-info">
           <div className="text-light text-center">{status}</div>

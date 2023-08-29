@@ -10,6 +10,7 @@ import "../../src/assets/board.css";
 import ChessBoard from "./ChessBoard";
 import ChatBox from "./ChatBox";
 import { findAllUser } from "../redux/reducer/userSlice";
+import { Toaster, toast } from "react-hot-toast";
 const ROWS = 16;
 const COLS = 16;
 
@@ -82,9 +83,22 @@ export default function Room() {
     );
   };
 
+  const handleClick = () => {
+    toast((t) => (
+      <span>
+        Ban co muon choi lai
+        <button className="btn btn-danger ms-2" onClick={handlePlayAgain}>
+          {" "}
+          Choi lai
+        </button>
+      </span>
+    ));
+  };
+
   const renderPlayer =
     roomFind?.playerId != null ? (
       <div className="mb-2 me-5">
+        <Toaster position="top-center" reverseOrder={false} />
         <p className="text-light text-center fs-6">
           Doi Thu({player?.username})
         </p>
@@ -139,7 +153,7 @@ export default function Room() {
           </div>
           <div className="me-2">
             <button
-              onClick={handlePlayAgain}
+              onClick={handleClick}
               className="btn btn-info btn-rounded mb-3 w-100"
             >
               Choi lai
