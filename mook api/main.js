@@ -1,6 +1,12 @@
 const jsonServer = require("json-server");
 const auth = require("json-server-auth");
+const express = require("express");
 const cors = require("cors");
+
+const app = express();
+
+// Cho phép tất cả các nguồn (cần thiết cho việc phát triển)
+app.use(cors());
 
 const server = jsonServer.create();
 const router = jsonServer.router("db.json");
@@ -37,6 +43,6 @@ server.use((req, res, next) => {
 
 // Use default router
 server.use("/api", router);
-server.listen(5000, () => {
-  console.log("JSON Server running 5000");
+server.listen(8080, () => {
+  console.log("JSON Server is running");
 });

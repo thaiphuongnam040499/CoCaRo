@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteRoom,
-  findAllRoom,
-  updateRoom,
-} from "../redux/reducer/roomSlice";
+import { findAllRoom } from "../redux/reducer/roomSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import "../../src/assets/board.css";
 import ChessBoard from "./ChessBoard";
@@ -25,6 +21,14 @@ export default function Room() {
   const { id } = useParams();
   const [isShowChat, setIsShowChat] = useState(false);
 
+  const roomFind = rooms.find((room) => room.id === parseInt(id));
+
+  const roomByPlayer = rooms.find(
+    (room) => room.playerId === roomFind?.playerId
+  );
+
+  const player = users.find((user) => user.id === roomByPlayer?.playerId);
+
   useEffect(() => {
     dispatch(findAllRoom());
     dispatch(findAllUser());
@@ -36,63 +40,6 @@ export default function Room() {
 
   const handleOffShowChat = () => {
     setIsShowChat(false);
-  };
-
-  const roomFind = rooms.find((room) => room.id === parseInt(id));
-
-  const roomByPlayer = rooms.find(
-    (room) => room.playerId === roomFind?.playerId
-  );
-
-  const player = users.find((user) => user.id === roomByPlayer?.playerId);
-
-  const handleOutRoom = () => {
-    if (roomFind && userLogin) {
-      dispatch(deleteRoom(roomFind.id));
-      navigate("/home");
-    } else {
-      navigate("/home");
-    }
-  };
-
-  const handleChangeStatus = () => {
-    if (roomFind?.status) {
-      dispatch(
-        updateRoom({
-          ...roomFind,
-          status: false,
-        })
-      );
-    } else {
-      dispatch(
-        updateRoom({
-          ...roomFind,
-          status: true,
-        })
-      );
-    }
-  };
-
-  const handlePlayAgain = () => {
-    dispatch(
-      updateRoom({
-        ...roomFind,
-        dataChess: BOARD_DEFAULT,
-        currentUserId: userLogin.id,
-      })
-    );
-  };
-
-  const handleClick = () => {
-    toast((t) => (
-      <span>
-        Ban co muon choi lai
-        <button className="btn btn-danger ms-2" onClick={handlePlayAgain}>
-          {" "}
-          Choi lai
-        </button>
-      </span>
-    ));
   };
 
   const renderPlayer =
@@ -133,44 +80,10 @@ export default function Room() {
             {roomFind?.status ? "Chuan bi..." : "San sang"}
           </p>
         </div>
-        <div className="d-flex align-items-center">
-          <div className="me-2">
-            {roomFind?.status ? (
-              <button
-                onClick={handleChangeStatus}
-                className="btn btn-success btn-rounded mb-3 w-100"
-              >
-                San sang
-              </button>
-            ) : (
-              <button
-                onClick={handleChangeStatus}
-                className="btn btn-warning btn-rounded mb-3 w-100"
-              >
-                Huy san sang
-              </button>
-            )}
-          </div>
-          <div className="me-2">
-            <button
-              onClick={handleClick}
-              className="btn btn-info btn-rounded mb-3 w-100"
-            >
-              Choi lai
-            </button>
-          </div>
-          <div className="me-2">
-            <button
-              onClick={handleOutRoom}
-              className="btn btn-danger btn-rounded mb-3 w-100"
-            >
-              Roi phong
-            </button>
-          </div>
-        </div>
+
         {renderPlayer}
       </div>
-      <ChessBoard />
+      <ChessBoard rooms={rooms} users={users} />
       <div>
         <button
           onClick={handleShowChat}

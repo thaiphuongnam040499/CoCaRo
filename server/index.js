@@ -19,6 +19,14 @@ socketIo.on("connection", (socket) => {
     socketIo.emit("sendDataServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
   });
 
+  socket.on("sendOnerTimeClient", function (data) {
+    socketIo.emit("sendOnerTimeServer", { data });
+  });
+
+  socket.on("sendPlayerTimeClient", function (data) {
+    socketIo.emit("sendPlayerTimeServer", { data });
+  });
+
   socket.on("sendDisableClient", function (data) {
     // Handle khi có sự kiện tên là sendDataClient từ phía client
     socketIo.emit("sendDisableServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server

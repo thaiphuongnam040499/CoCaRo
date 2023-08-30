@@ -29,4 +29,5 @@ export const {
   deleteRoom,
   findCreateRoom,
   updateRoom,
+  findUpdateRoom,
 } = roomSlice.actions;
