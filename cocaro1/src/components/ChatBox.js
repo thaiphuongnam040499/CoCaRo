@@ -88,7 +88,7 @@ export default function ChatBox({ handleOffShowChat }) {
         />
         <div>
           <button className="btn btn-success" onClick={sendMessage}>
-            Send
+            {t("send")}
           </button>
         </div>
       </div>

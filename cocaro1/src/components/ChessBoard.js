@@ -6,6 +6,7 @@ import * as roomSlice from "../redux/reducer/roomSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import useCutomeHook from "../contants/useCustomerHook";
 
 const host = "http://localhost:4002";
 const ROWS = 16;
@@ -15,7 +16,7 @@ const BOARD_DEFAULT = Array(ROWS).fill(Array(COLS).fill(null));
 
 export default function ChessBoard({ rooms, users }) {
   const [board, setBoard] = useState(Array(ROWS).fill(Array(COLS).fill(null)));
-  const userLogin = JSON.parse(localStorage.getItem("userLogin"));
+  const { userLogin } = useCutomeHook();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -59,38 +60,53 @@ export default function ChessBoard({ rooms, users }) {
   }, [room]);
 
   useEffect(() => {
+    if (!room) return;
+    const updatedRoom = {
+      ...room,
+      dataChess: board,
+      onerTime,
+      playerTime,
+      onerLost,
+      playerLost,
+    };
+    dispatch(roomSlice.updateRoom(updatedRoom));
+  }, [playerTime, onerTime, playerLost, onerLost]);
+
+  useEffect(() => {
     const onerInterval = setInterval(() => {
-      if (disable.oner && !disable.player && onerTime > 0) {
+      if (disable.oner && !disable.player && playerTime > 0 && !winner) {
         setPlayerTime((prevTime) => prevTime - 1);
         setOnerTime(15);
       }
+      dispatch(roomSlice.findAllRoom());
     }, 1000);
 
     const playerInterval = setInterval(() => {
-      if (disable.player && !disable.oner && playerTime > 0) {
+      if (disable.player && !disable.oner && onerTime > 0 && !winner) {
         setOnerTime((prevTime) => prevTime - 1);
         setPlayerTime(15);
       }
+      dispatch(roomSlice.findAllRoom());
     }, 1000);
     if (!winner) {
       if (playerTime === 0 && !playerLost) {
         clearInterval(playerInterval);
-        setPlayerLost(true);
         alert(`${userPlayer?.username} thua cuoc`);
         setDisable({
           oner: true,
           player: true,
         });
+        setPlayerLost(true);
       }
 
       if (onerTime === 0 && !onerLost) {
         clearInterval(onerInterval);
-        setOnerLost(true);
         alert(`${userOner?.username} thua cuoc`);
         setDisable({
           oner: true,
           player: true,
         });
+        setOnerLost(true);
       }
     }
     return () => {
@@ -101,7 +117,6 @@ export default function ChessBoard({ rooms, users }) {
 
   const handleClick = async (row, col) => {
     if (board[row][col] || calculateWinner(board) || winner) {
-      toast.success(`${winner.username} chien thang. Ban thua cuoc`);
       return;
     }
     const newBoard = board.map((r, indexR) =>
@@ -148,12 +163,11 @@ export default function ChessBoard({ rooms, users }) {
         {row.map((_, colIndex) => renderSquare(rowIndex, colIndex))}
       </div>
     ));
-
   const status = winner
     ? `${t("winner")}: ${winner.username}`
     : `${t("next")}: ${
         disable.oner ? `${userPlayer?.username}` : `${userOner?.username}`
-      } - ${disable.oner ? playerTime : onerTime} ${t("seconds")}`;
+      } - ${disable.oner ? room?.playerTime : room?.onerTime} ${t("seconds")}`;
 
   const roomFind = rooms.find((room) => room.id === parseInt(id));
 
@@ -190,17 +204,17 @@ export default function ChessBoard({ rooms, users }) {
         ...roomFind,
         dataChess: BOARD_DEFAULT,
         currentUserId: userLogin.id,
+        onerTime: 15,
+        playerTime: 15,
+        onerLost: false,
+        playerLost: false,
       })
     );
+    dispatch(roomSlice.findAllRoom());
     setDisable({
       oner: false,
       player: false,
     });
-    setOnerTime(15);
-    setPlayerTime(15);
-    setOnerLost(false);
-    setPlayerLost(false);
-    dispatch(roomSlice.findAllRoom());
   };
 
   const handleClickBtn = () => {
@@ -235,6 +249,10 @@ export default function ChessBoard({ rooms, users }) {
       </span>
     ));
   };
+
+  if (winner) {
+    toast.success(`${winner.username} chien thang. Ban thua cuoc`);
+  }
 
   return (
     <div className="d-flex justify-content-center align-items-center ">

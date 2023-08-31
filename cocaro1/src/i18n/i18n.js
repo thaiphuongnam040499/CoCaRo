@@ -33,6 +33,7 @@ i18n
           seconds: "seconds",
           register: "Register",
           rePass: "RePassword",
+          send: "Send",
         },
       },
       vi: {
@@ -58,6 +59,7 @@ i18n
           seconds: "Giây",
           register: "Đăng ký",
           rePass: "Nhập lại mật khẩu",
+          send: "Gửi",
         },
       },
     },
