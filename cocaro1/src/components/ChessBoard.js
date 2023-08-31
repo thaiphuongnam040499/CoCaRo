@@ -78,7 +78,6 @@ export default function ChessBoard({ rooms, users }) {
         setPlayerTime((prevTime) => prevTime - 1);
         setOnerTime(15);
       }
-      dispatch(roomSlice.findAllRoom());
     }, 1000);
 
     const playerInterval = setInterval(() => {
@@ -86,7 +85,6 @@ export default function ChessBoard({ rooms, users }) {
         setOnerTime((prevTime) => prevTime - 1);
         setPlayerTime(15);
       }
-      dispatch(roomSlice.findAllRoom());
     }, 1000);
     if (!winner) {
       if (playerTime === 0 && !playerLost) {
