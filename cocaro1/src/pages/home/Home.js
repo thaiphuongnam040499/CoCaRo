@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createRoom, findAllRoom } from "../../redux/reducer/roomSlice";
 import SearchRoom from "../../components/SearchRoom";
 import store from "../../redux/store";
+import { useTranslation } from "react-i18next";
 const ROWS = 16;
 const COLS = 16;
 const BOARD_DEFAULT = Array(ROWS).fill(Array(COLS).fill(null));
@@ -15,6 +16,7 @@ export default function Home() {
   const userLogin = JSON.parse(localStorage.getItem("userLogin"));
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     localStorage.removeItem("userLogin");
@@ -78,114 +80,116 @@ export default function Home() {
   };
 
   return (
-    <div className="w-100 d-flex justify-content-center btn-home align-items-center bg-dark ">
-      <div className="w-25">
-        <div>
-          <div className="dropdown">
-            <button
-              className="btn btn-warning btn-rounded mb-3 w-100 "
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Choi voi may
-            </button>
-            <ul
-              className="dropdown-menu p-2 room"
-              aria-labelledby="dropdownMenuButton1"
-            >
-              <li>
-                <p className="p-0 text-center">Tao Phong</p>
-                <div className="mb-2">
-                  <p>Ten phong</p>
-                  <input
-                    type="text"
-                    onChange={(e) => {
-                      setRoomName(e.target.value);
-                    }}
-                    className="border rounded input-room w-100"
-                  />
-                </div>
-                <div className="mb-2">
-                  <p>Password</p>
-                  <input
-                    type="password"
-                    onChange={(e) => {
-                      setRoomPass(e.target.value);
-                    }}
-                    className="border rounded input-room w-100"
-                  />
-                </div>
-                <div>
-                  <button
-                    onClick={handleCreateRoomMachine}
-                    className="btn btn-success btn-rounded mb-3 w-100"
-                  >
-                    Tao Phong
-                  </button>
-                </div>
-              </li>
-            </ul>
+    <div>
+      <div className="w-100 d-flex justify-content-center btn-home align-items-center bg-dark ">
+        <div className="w-25">
+          <div>
+            <div className="dropdown">
+              <button
+                className="btn btn-warning btn-rounded mb-3 w-100 "
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {t("playMachine")}
+              </button>
+              <ul
+                className="dropdown-menu p-2 room"
+                aria-labelledby="dropdownMenuButton1"
+              >
+                <li>
+                  <p className="p-0 text-center">Tao Phong</p>
+                  <div className="mb-2">
+                    <p>Ten phong</p>
+                    <input
+                      type="text"
+                      onChange={(e) => {
+                        setRoomName(e.target.value);
+                      }}
+                      className="border rounded input-room w-100"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <p>Password</p>
+                    <input
+                      type="password"
+                      onChange={(e) => {
+                        setRoomPass(e.target.value);
+                      }}
+                      className="border rounded input-room w-100"
+                    />
+                  </div>
+                  <div>
+                    <button
+                      onClick={handleCreateRoomMachine}
+                      className="btn btn-success btn-rounded mb-3 w-100"
+                    >
+                      Tao Phong
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-        <div>
-          <div className="dropdown">
-            <button
-              className="btn btn-success btn-rounded mb-3 w-100 "
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Tao Phong
-            </button>
-            <ul
-              className="dropdown-menu p-2 room"
-              aria-labelledby="dropdownMenuButton1"
-            >
-              <li>
-                <p className="p-0 text-center">Tao Phong</p>
-                <div className="mb-2">
-                  <p>Ten phong</p>
-                  <input
-                    type="text"
-                    onChange={(e) => {
-                      setRoomName(e.target.value);
-                    }}
-                    className="border rounded input-room w-100"
-                  />
-                </div>
-                <div className="mb-2">
-                  <p>Password</p>
-                  <input
-                    type="password"
-                    onChange={(e) => {
-                      setRoomPass(e.target.value);
-                    }}
-                    className="border rounded input-room w-100"
-                  />
-                </div>
-                <div>
-                  <button
-                    onClick={handleCreateRoom}
-                    className="btn btn-success btn-rounded mb-3 w-100"
-                  >
-                    Tao Phong
-                  </button>
-                </div>
-              </li>
-            </ul>
+          <div>
+            <div className="dropdown">
+              <button
+                className="btn btn-success btn-rounded mb-3 w-100 "
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {t("createRoom")}
+              </button>
+              <ul
+                className="dropdown-menu p-2 room"
+                aria-labelledby="dropdownMenuButton1"
+              >
+                <li>
+                  <p className="p-0 text-center">Tao Phong</p>
+                  <div className="mb-2">
+                    <p>Ten phong</p>
+                    <input
+                      type="text"
+                      onChange={(e) => {
+                        setRoomName(e.target.value);
+                      }}
+                      className="border rounded input-room w-100"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <p>Password</p>
+                    <input
+                      type="password"
+                      onChange={(e) => {
+                        setRoomPass(e.target.value);
+                      }}
+                      className="border rounded input-room w-100"
+                    />
+                  </div>
+                  <div>
+                    <button
+                      onClick={handleCreateRoom}
+                      className="btn btn-success btn-rounded mb-3 w-100"
+                    >
+                      Tao Phong
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-        <SearchRoom />
-        <div>
-          <button
-            onClick={handleLogout}
-            className="btn btn-danger btn-rounded mb-3 w-100"
-          >
-            Thoat
-          </button>
+          <SearchRoom />
+          <div>
+            <button
+              onClick={handleLogout}
+              className="btn btn-danger btn-rounded mb-3 w-100"
+            >
+              {t("exits")}
+            </button>
+          </div>
         </div>
       </div>
     </div>

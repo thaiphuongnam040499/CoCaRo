@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createUser } from "../../redux/reducer/userSlice";
+import { useTranslation } from "react-i18next";
 
 export default function Register() {
   const [username, setUserName] = useState("");
@@ -16,10 +17,11 @@ export default function Register() {
       dispatch(createUser(user));
     }
   };
+  const { t } = useTranslation();
   return (
     <section className="vh-100">
       <div className="container py-5 h-100">
-        <h2 className="text-center">Register</h2>
+        <h2 className="text-center">{t("register")}</h2>
         <div className="row d-flex align-items-center justify-content-center h-100">
           <div className="col-md-8 col-lg-7 col-xl-6">
             <img
@@ -33,7 +35,7 @@ export default function Register() {
               {/* Email input */}
               <div className="form-outline mb-4">
                 <label className="form-label" htmlFor="form1Example13">
-                  Username
+                  {t("username")}
                 </label>
                 <input
                   type="text"
@@ -47,7 +49,7 @@ export default function Register() {
               {/* Password input */}
               <div className="form-outline mb-4">
                 <label className="form-label" htmlFor="form1Example23">
-                  Password
+                  {t("pass")}
                 </label>
                 <input
                   type="password"
@@ -60,7 +62,7 @@ export default function Register() {
               {/* Password input */}
               <div className="form-outline mb-4">
                 <label className="form-label" htmlFor="form1Example23">
-                  RePassword
+                  {t("rePass")}
                 </label>
                 <input
                   type="password"
@@ -76,8 +78,11 @@ export default function Register() {
                 onClick={handleCreateUser}
                 className="btn btn-primary btn-lg btn-block"
               >
-                Register
+                {t("register")}
               </button>
+              <a className="ms-2" href="/">
+                {t("login")}
+              </a>
             </form>
           </div>
         </div>

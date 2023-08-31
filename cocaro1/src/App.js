@@ -7,7 +7,7 @@ import MainLayout from "./layout/MainLayout";
 import Home from "./pages/home/Home";
 import Room from "./components/Room";
 import RoomMachine from "./components/RoomMachine";
-
+import "../src/i18n/i18n.js";
 export default function App() {
   return (
     <div className="rooms">

@@ -1,16 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import socketIOClient from "socket.io-client";
-import {
-  deleteRoom,
-  findAllRoom,
-  updateRoom,
-} from "../redux/reducer/roomSlice";
+import * as roomSlice from "../redux/reducer/roomSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import { findAllUser } from "../redux/reducer/userSlice";
 import { Toaster, toast } from "react-hot-toast";
-import store from "../redux/store";
+import { useTranslation } from "react-i18next";
 
 const host = "http://localhost:4002";
 const ROWS = 16;
@@ -25,7 +20,7 @@ export default function ChessBoard({ rooms, users }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const room = rooms.find((room) => room.id === parseInt(id));
-
+  const { t } = useTranslation();
   const socketRef = useRef();
   const [onerTime, setOnerTime] = useState(15);
   const [playerTime, setPlayerTime] = useState(15);
@@ -121,7 +116,7 @@ export default function ChessBoard({ rooms, users }) {
     socketRef.current.emit("sendDisableClient", checkDisable);
     socketRef.current.emit("sendDataClient", newBoard);
     dispatch(
-      updateRoom({
+      roomSlice.updateRoom({
         ...room,
         currentUserId: userLogin.id,
         dataChess: newBoard,
@@ -155,16 +150,16 @@ export default function ChessBoard({ rooms, users }) {
     ));
 
   const status = winner
-    ? `Winner: ${winner.username}`
-    : `Luot tiep theo: ${
+    ? `${t("winner")}: ${winner.username}`
+    : `${t("next")}: ${
         disable.oner ? `${userPlayer?.username}` : `${userOner?.username}`
-      } - ${disable.oner ? playerTime : onerTime} seconds`;
+      } - ${disable.oner ? playerTime : onerTime} ${t("seconds")}`;
 
   const roomFind = rooms.find((room) => room.id === parseInt(id));
 
   const handleOutRoom = () => {
     if (roomFind && userLogin) {
-      dispatch(deleteRoom(roomFind?.id));
+      dispatch(roomSlice.deleteRoom(roomFind?.id));
       navigate("/home");
     } else {
       navigate("/home");
@@ -174,14 +169,14 @@ export default function ChessBoard({ rooms, users }) {
   const handleChangeStatus = () => {
     if (roomFind?.status) {
       dispatch(
-        updateRoom({
+        roomSlice.updateRoom({
           ...roomFind,
           status: false,
         })
       );
     } else {
       dispatch(
-        updateRoom({
+        roomSlice.updateRoom({
           ...roomFind,
           status: true,
         })
@@ -191,7 +186,7 @@ export default function ChessBoard({ rooms, users }) {
 
   const handlePlayAgain = () => {
     dispatch(
-      updateRoom({
+      roomSlice.updateRoom({
         ...roomFind,
         dataChess: BOARD_DEFAULT,
         currentUserId: userLogin.id,
@@ -201,19 +196,19 @@ export default function ChessBoard({ rooms, users }) {
       oner: false,
       player: false,
     });
-    dispatch(findAllRoom());
     setOnerTime(15);
     setPlayerTime(15);
     setOnerLost(false);
     setPlayerLost(false);
+    dispatch(roomSlice.findAllRoom());
   };
 
   const handleClickBtn = () => {
-    toast((t) => (
+    toast((h) => (
       <span>
-        Ban co muon choi lai
+        {t("playAgain")} ?
         <button className="btn btn-danger ms-2" onClick={handlePlayAgain}>
-          Choi lai
+          {t("playAgain")}
         </button>
       </span>
     ));
@@ -231,11 +226,11 @@ export default function ChessBoard({ rooms, users }) {
   };
 
   const handleClickGiveIn = () => {
-    toast((t) => (
+    toast((h) => (
       <span>
-        Ban chac chan dau hang
+        {t("giveIn")} ?
         <button className="btn btn-danger ms-2" onClick={handleGiveIn}>
-          Dau hang
+          {t("giveIn")}
         </button>
       </span>
     ));
@@ -253,14 +248,14 @@ export default function ChessBoard({ rooms, users }) {
                   onClick={handleChangeStatus}
                   className="btn btn-success btn-rounded mb-3 w-100"
                 >
-                  San sang
+                  {t("ready")}
                 </button>
               ) : (
                 <button
                   onClick={handleChangeStatus}
                   className="btn btn-warning btn-rounded mb-3 w-100"
                 >
-                  Huy san sang
+                  {t("unReady")}
                 </button>
               )}
             </div>
@@ -269,7 +264,7 @@ export default function ChessBoard({ rooms, users }) {
                 onClick={handleClickBtn}
                 className="btn btn-info btn-rounded mb-3 w-100"
               >
-                Choi lai
+                {t("playAgain")}
               </button>
             </div>
             <div className="me-2">
@@ -277,7 +272,7 @@ export default function ChessBoard({ rooms, users }) {
                 onClick={handleClickGiveIn}
                 className="btn btn-warning btn-rounded mb-3 w-100"
               >
-                Dau hang
+                {t("giveIn")}
               </button>
             </div>
             <div className="me-2">
@@ -285,7 +280,7 @@ export default function ChessBoard({ rooms, users }) {
                 onClick={handleOutRoom}
                 className="btn btn-danger btn-rounded mb-3 w-100"
               >
-                Roi phong
+                {t("exits")}
               </button>
             </div>
           </div>

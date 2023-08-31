@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../src/assets/board.css";
 import socketIOClient from "socket.io-client";
+import { useTranslation } from "react-i18next";
 
 const host = "http://localhost:4002";
 
@@ -64,10 +65,11 @@ export default function ChatBox({ handleOffShowChat }) {
       sendMessage();
     }
   };
+  const { t } = useTranslation();
   return (
     <div className="chat-box bg-light ms-3 p-3">
       <div className="d-flex justify-content-between align-items-center">
-        <p className="p-0 m-0">Chat</p>
+        <p className="p-0 m-0">{t("chat")}</p>
         <button onClick={handleOffShowChat} className="btn btn-light">
           <i className="bi bi-x-lg"></i>
         </button>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { findAllUser } from "../../redux/reducer/userSlice";
 import { json, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const [username, setUserName] = useState("");
@@ -9,6 +10,7 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const users = useSelector((state) => state.user.listUser);
+  const { t } = useTranslation();
 
   useEffect(() => {
     dispatch(findAllUser());
@@ -28,7 +30,7 @@ export default function Login() {
   return (
     <section className="vh-100">
       <div className="container py-5 h-100">
-        <h2 className="text-center">Login</h2>
+        <h2 className="text-center">{t("login")}</h2>
         <div className="row d-flex align-items-center justify-content-center h-100">
           <div className="col-md-8 col-lg-7 col-xl-6">
             <img
@@ -42,7 +44,7 @@ export default function Login() {
               {/* Email input */}
               <div className="form-outline mb-4">
                 <label className="form-label" htmlFor="form1Example13">
-                  Username
+                  {t("username")}
                 </label>
                 <input
                   type="text"
@@ -56,7 +58,7 @@ export default function Login() {
               {/* Password input */}
               <div className="form-outline mb-4">
                 <label className="form-label" htmlFor="form1Example23">
-                  Password
+                  {t("pass")}
                 </label>
                 <input
                   onChange={(e) => {
@@ -72,8 +74,11 @@ export default function Login() {
                 type="submit"
                 className="btn btn-primary btn-lg btn-block"
               >
-                Sign in
+                {t("signIn")}
               </button>
+              <a className="ms-2" href="/register">
+                {t("register")}
+              </a>
             </form>
           </div>
         </div>

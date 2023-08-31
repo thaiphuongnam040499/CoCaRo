@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { findAllRoom, updateRoom } from "../redux/reducer/roomSlice";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export default function SearchRoom() {
   const [roomName, setRoomName] = useState("");
@@ -11,7 +12,7 @@ export default function SearchRoom() {
   const navigate = useNavigate();
   const rooms = useSelector((state) => state.room.listRoom);
   const userLogin = JSON.parse(localStorage.getItem("userLogin"));
-
+  const { t } = useTranslation();
   const roomSearch = rooms.find(
     (room) => room.roomName === roomName && roomPass === room.roomPass
   );
@@ -44,7 +45,7 @@ export default function SearchRoom() {
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          Choi voi ban
+          {t("playFriend")}
         </button>
         <ul
           className="dropdown-menu p-2 room"
