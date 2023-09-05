@@ -54,6 +54,10 @@ export default function ChessBoard({ rooms, users }) {
   }, []);
 
   useEffect(() => {
+    dispatch(roomSlice.findAllRoom());
+  }, [onerTime, playerTime]);
+
+  useEffect(() => {
     if (room) {
       setBoard(room.dataChess);
     }
@@ -74,14 +78,14 @@ export default function ChessBoard({ rooms, users }) {
 
   useEffect(() => {
     const onerInterval = setInterval(() => {
-      if (disable.oner && !disable.player && playerTime > 0 && !winner) {
+      if (disable.oner && !disable.player && room?.playerTime > 0 && !winner) {
         setPlayerTime((prevTime) => prevTime - 1);
         setOnerTime(15);
       }
     }, 1000);
 
     const playerInterval = setInterval(() => {
-      if (disable.player && !disable.oner && onerTime > 0 && !winner) {
+      if (disable.player && !disable.oner && room?.onerTime > 0 && !winner) {
         setOnerTime((prevTime) => prevTime - 1);
         setPlayerTime(15);
       }
@@ -90,20 +94,12 @@ export default function ChessBoard({ rooms, users }) {
       if (playerTime === 0 && !playerLost) {
         clearInterval(playerInterval);
         alert(`${userPlayer?.username} thua cuoc`);
-        setDisable({
-          oner: true,
-          player: true,
-        });
         setPlayerLost(true);
       }
 
       if (onerTime === 0 && !onerLost) {
         clearInterval(onerInterval);
         alert(`${userOner?.username} thua cuoc`);
-        setDisable({
-          oner: true,
-          player: true,
-        });
         setOnerLost(true);
       }
     }
@@ -165,7 +161,9 @@ export default function ChessBoard({ rooms, users }) {
     ? `${t("winner")}: ${winner.username}`
     : `${t("next")}: ${
         disable.oner ? `${userPlayer?.username}` : `${userOner?.username}`
-      } - ${disable.oner ? room?.playerTime : room?.onerTime} ${t("seconds")}`;
+      } - ${
+        room?.playerId === userLogin?.id ? room?.onerTime : room?.playerTime
+      } ${t("seconds")}`;
 
   const roomFind = rooms.find((room) => room.id === parseInt(id));
 

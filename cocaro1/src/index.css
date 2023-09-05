@@ -9,3 +9,7 @@
 .form-select {
   width: 150px;
 }
+.winning-square {
+  background-color: lightgreen; /* Màu nền xanh */
+  /* Các thuộc tính CSS khác... */
+}

@@ -15,8 +15,8 @@
   ],
   "rooms": [
     {
-      "roomName": "aaa",
-      "roomPass": "a",
+      "roomName": "1234",
+      "roomPass": "1",
       "userId": 1,
       "playerId": 2,
       "currentUserId": 2,
@@ -119,8 +119,8 @@
           null,
           null,
           null,
-          null,
-          null,
+          "X",
+          "O",
           null,
           null,
           null,
@@ -311,12 +311,12 @@
           null
         ]
       ],
-      "createdAt": 1693475693750,
-      "id": 2,
+      "createdAt": 1693905822401,
+      "id": 1,
       "onerTime": 15,
-      "playerTime": 15,
+      "playerTime": -2,
       "onerLost": false,
-      "playerLost": false
+      "playerLost": true
     }
   ]
 }
