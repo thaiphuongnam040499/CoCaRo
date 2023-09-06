@@ -24,11 +24,7 @@ export default function ChessBoard({ rooms, users }) {
   const room = rooms.find((room) => room.id === parseInt(id));
   const { t } = useTranslation();
   const socketRef = useRef();
-  const [gameTime, setGameTime] = useState(() => {
-    // Khởi tạo thời gian từ local storage nếu có, nếu không thì sử dụng giá trị mặc định (15).
-    const savedGameTime = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return savedGameTime !== null ? parseInt(savedGameTime, 10) : 15;
-  });
+  const [gameTime, setGameTime] = useState(15);
   const [disable, setDisable] = useState({
     oner: false,
     player: false,
@@ -39,7 +35,6 @@ export default function ChessBoard({ rooms, users }) {
 
   useEffect(() => {
     socketRef.current = socketIOClient.connect(host);
-
     socketRef.current.on("sendDataServer", (dataGot) => {
       setBoard(dataGot.data);
     });
@@ -52,7 +47,6 @@ export default function ChessBoard({ rooms, users }) {
     socketRef.current.on("sendGameTimeServer", (dataGot) => {
       setGameTime(dataGot.data);
     });
-
     return () => {
       socketRef.current.disconnect();
     };
@@ -105,6 +99,7 @@ export default function ChessBoard({ rooms, users }) {
     if (board[row][col] || calculateWinner(board) || winner) {
       return;
     }
+    setGameTime(15);
     const newBoard = board.map((r, indexR) =>
       indexR === row
         ? r.map((c, indexC) =>
@@ -123,13 +118,12 @@ export default function ChessBoard({ rooms, users }) {
         dataChess: newBoard,
       })
     );
-    setGameTime(15);
   };
 
   const renderSquare = (row, col) => (
     <button
       disabled={
-        room?.currentUserId === userLogin?.id ? disable.oner : disable.player
+        room?.currentUserId === userLogin.id ? disable.oner : disable.player
       }
       className="square"
       onClick={() => handleClick(row, col)}
@@ -156,7 +150,7 @@ export default function ChessBoard({ rooms, users }) {
         disable.oner === true
           ? `${userPlayer?.username}`
           : `${userOner?.username}`
-      } - ${gameTime} ${t("seconds")}`;
+      }  ${gameTime} ${t("seconds")}`;
 
   const roomFind = rooms.find((room) => room.id === parseInt(id));
 
@@ -193,9 +187,10 @@ export default function ChessBoard({ rooms, users }) {
       roomSlice.updateRoom({
         ...roomFind,
         dataChess: BOARD_DEFAULT,
-        currentUserId: userLogin.id,
+        currentUserId: room?.userId,
       })
     );
+    localStorage.removeItem("gameTime");
     setGameTime(15);
     setDisable({
       oner: false,

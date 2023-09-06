@@ -18,6 +18,7 @@ export default function Room() {
   const users = useSelector((state) => state.user.listUser);
   const dispatch = useDispatch();
   const rooms = useSelector((state) => state.room.listRoom);
+
   const navigate = useNavigate();
   const { id } = useParams();
   const [isShowChat, setIsShowChat] = useState(false);
@@ -58,7 +59,7 @@ export default function Room() {
           alt=""
         />
         <p className="text-light text-center fs-6 mt-2">
-          {roomFind?.status ? "Chuan bi..." : "San sang"}
+          {roomFind?.status === false ? "Chuan bi..." : "San sang"}
         </p>
       </div>
     ) : (

@@ -34,7 +34,7 @@ export default function Home() {
       userId: userLogin.id,
       playerId: null,
       currentUserId: null,
-      status: 1,
+      status: false,
       dataChess: BOARD_DEFAULT,
     };
     await dispatch(createRoom(room)); // Đợi cho createRoom hoàn thành
