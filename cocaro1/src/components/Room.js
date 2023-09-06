@@ -28,6 +28,8 @@ export default function Room() {
     (room) => room.playerId === roomFind?.playerId
   );
 
+  const oner = users.find((user) => user.id === roomByPlayer?.userId);
+
   const player = users.find((user) => user.id === roomByPlayer?.playerId);
 
   useEffect(() => {
@@ -70,7 +72,7 @@ export default function Room() {
       <div className="d-flex justify-content-around mb-2 pt-5">
         <div className="mb-2 me-5">
           <p className="text-light text-center fs-6">
-            {t("you")}({userLogin.username})
+            {t("you")}({oner?.username})
           </p>
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJxA5cTf-5dh5Eusm0puHbvAhOrCRPtckzjA&usqp=CAU"

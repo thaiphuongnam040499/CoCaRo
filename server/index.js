@@ -15,12 +15,8 @@ socketIo.on("connection", (socket) => {
     socketIo.emit("sendDataServer", { data });
   });
 
-  socket.on("sendOnerTimeClient", function (data) {
-    socketIo.emit("sendOnerTimeServer", { data });
-  });
-
-  socket.on("sendPlayerTimeClient", function (data) {
-    socketIo.emit("sendPlayerTimeServer", { data });
+  socket.on("sendGameTimeClient", function (data) {
+    socketIo.emit("sendGameTimeServer", { data });
   });
 
   socket.on("sendDisableClient", function (data) {
