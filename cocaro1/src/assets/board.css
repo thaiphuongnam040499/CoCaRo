@@ -142,6 +142,9 @@ textarea:focus {
 }
 .show_icon {
   position: absolute;
-  top: 245px;
-  left: 170px;
+  top: 225px;
+  left: 155px;
+  background-color: #cecece;
+  padding: 10px;
+  height: 60px;
 }

@@ -12,6 +12,7 @@ export default function ChatBox({ handleOffShowChat }) {
   const socketRef = useRef();
   const messagesEnd = useRef();
   const userLogin = JSON.parse(localStorage.getItem("userLogin"));
+  let element;
 
   useEffect(() => {
     socketRef.current = socketIOClient.connect(host);
@@ -23,13 +24,16 @@ export default function ChatBox({ handleOffShowChat }) {
     socketRef.current.on("sendDataServerMess", (dataGot) => {
       setMess((oldMsgs) => [...oldMsgs, dataGot.data]);
       setId(dataGot.data.id);
-      scrollToBottom();
     });
 
     return () => {
       socketRef.current.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [mess]);
 
   const sendMessage = () => {
     if (message !== "") {
@@ -108,25 +112,23 @@ export default function ChatBox({ handleOffShowChat }) {
         category: "<3",
       },
     ];
-    //Duyệt vòng foreach của list icon để kiểm tra chuỗi truyền vào có tồn tại category không
-    //Nếu trong cái chuỗi string đó có tồn tại category của icon thì nó sẽ replace thành thẻ <image>
+
     icon.forEach((element) => {
       if (message.indexOf(element.category) > -1) {
         console.log("True");
-        //Replace
+
         message = message.replace(element.category, element.image);
       }
     });
 
     return message;
   }
-  //Click hiện danh sách Icon
+
   const [emotion, setEmotion] = useState(false);
   const onClickEmotion = () => {
     setEmotion(!emotion);
   };
 
-  //Click vào từng icon nó sẽ nhận cái value truyền vào theo từng loại
   const onClickIcon = (value) => {
     setMessage(message + "" + value + " ");
   };
