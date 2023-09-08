@@ -25,6 +25,8 @@ export default function ChessBoard({ rooms, users }) {
   const { t } = useTranslation();
   const socketRef = useRef();
   const [gameTime, setGameTime] = useState(15);
+  const [timeCheck, setTimeCheck] = useState(false);
+  const [time, setTime] = useState();
   const [disable, setDisable] = useState({
     oner: false,
     player: false,
@@ -45,7 +47,10 @@ export default function ChessBoard({ rooms, users }) {
       });
     });
     socketRef.current.on("sendGameTimeServer", (dataGot) => {
-      setGameTime(dataGot.data);
+      setTime(dataGot.data);
+    });
+    socketRef.current.on("sendTimeCheckServer", (dataGot) => {
+      setTimeCheck(dataGot.data);
     });
     return () => {
       socketRef.current.disconnect();
@@ -60,14 +65,15 @@ export default function ChessBoard({ rooms, users }) {
 
   useEffect(() => {
     const savedGameTime = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (savedGameTime !== null) {
-      setGameTime(parseInt(savedGameTime, 10) - 2);
+    if (savedGameTime != null) {
+      setGameTime(savedGameTime);
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, gameTime.toString());
+    localStorage.setItem(LOCAL_STORAGE_KEY, gameTime);
     socketRef.current.emit("sendGameTimeClient", gameTime);
+    socketRef.current.emit("sendTimeCheckClient", timeCheck);
     const gameTimeInterval = setInterval(() => {
       if (!winner) {
         if (
@@ -95,11 +101,31 @@ export default function ChessBoard({ rooms, users }) {
     };
   }, [disable, gameTime]);
 
-  const handleClick = async (row, col) => {
+  useEffect(() => {
+    if (timeCheck) {
+      setGameTime(15);
+    }
+    setTimeout(() => {
+      setTimeCheck(false);
+    }, 1000);
+  }, [timeCheck]);
+
+  useEffect(() => {
+    if (winner) {
+      toast.success(`${winner.username} chiến thắng`);
+      setDisable({
+        oner: true,
+        player: true,
+      });
+      handleClickBtn();
+    }
+  }, [winner]);
+
+  const handleClick = (row, col) => {
     if (board[row][col] || calculateWinner(board) || winner) {
       return;
     }
-    setGameTime(15);
+    setTimeCheck(true);
     const newBoard = board.map((r, indexR) =>
       indexR === row
         ? r.map((c, indexC) =>
@@ -147,10 +173,8 @@ export default function ChessBoard({ rooms, users }) {
   const status = winner
     ? `${t("winner")}: ${winner.username}`
     : `${t("next")}: ${
-        disable.oner === true
-          ? `${userPlayer?.username}`
-          : `${userOner?.username}`
-      }  ${gameTime} ${t("seconds")}`;
+        disable.oner ? `${userPlayer?.username}` : `${userOner?.username}`
+      }  ${time} ${t("seconds")}`;
 
   const roomFind = rooms.find((room) => room.id === parseInt(id));
 
@@ -290,7 +314,6 @@ function calculateWinner(board, userOner, userPlayer) {
     [1, 1], // duong cheo trai xuong phai
     [-1, 1], // duong cheo phai xuong trai
   ];
-
   const checkWin = (row, col, dirX, dirY) => {
     const player = board[row][col];
     if (!player) return false;

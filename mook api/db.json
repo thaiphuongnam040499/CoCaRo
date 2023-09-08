@@ -20,7 +20,7 @@
       "userId": 1,
       "playerId": 2,
       "currentUserId": 1,
-      "status": 1,
+      "status": true,
       "dataChess": [
         [
           null,
@@ -311,8 +311,12 @@
           null
         ]
       ],
-      "createdAt": 1693975390142,
-      "id": 1
+      "createdAt": 1694048642177,
+      "id": 1,
+      "disable": {
+        "oner": true,
+        "player": false
+      }
     }
   ]
 }

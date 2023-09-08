@@ -21,6 +21,7 @@
   position: absolute;
   top: 450px;
   left: 0px;
+  overflow-anchor: none;
 }
 .chat-box-item {
   height: 22vh;
@@ -84,6 +85,7 @@
   min-height: 25vh;
   max-height: 25vh;
   overflow-y: auto;
+  overflow-anchor: auto;
 }
 .box-chat {
   width: 70%;
@@ -121,4 +123,25 @@ textarea:focus {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.input-chat {
+  position: relative;
+}
+
+.btn-icon {
+  cursor: pointer;
+  position: absolute;
+  right: 100px;
+  bottom: 41px;
+}
+.img_icon {
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+}
+.show_icon {
+  position: absolute;
+  top: 245px;
+  left: 170px;
 }
