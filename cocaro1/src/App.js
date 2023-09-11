@@ -7,6 +7,7 @@ import MainLayout from "./layout/MainLayout";
 import Home from "./pages/home/Home";
 import Room from "./components/Room";
 import "../src/i18n/i18n.js";
+import RoomMachine from "./components/RoomMachine";
 export default function App() {
   return (
     <div className="rooms">
@@ -18,6 +19,7 @@ export default function App() {
         <Route element={<MainLayout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/room/:id" element={<Room />} />
+          <Route path="/roomMachine/:id" element={<RoomMachine />} />
         </Route>
       </Routes>
     </div>

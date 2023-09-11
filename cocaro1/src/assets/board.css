@@ -50,13 +50,16 @@
   border: 1px solid #999;
   cursor: pointer;
 }
+.square.black {
+  color: black; /* Màu chữ cho X */
+}
+
+.square.red {
+  color: red; /* Màu chữ cho O */
+}
 
 .square:hover {
   background-color: #f0f0f0;
-}
-
-.game-info {
-  margin-left: 20px;
 }
 
 .chat-item {

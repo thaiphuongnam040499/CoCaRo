@@ -49,10 +49,85 @@ export default function Home() {
     });
   };
 
+  const handleCreateRoomMachine = async () => {
+    let room = {
+      roomName: roomName,
+      roomPass: roomPass,
+      userId: userLogin.id,
+      playerId: null,
+      currentUserId: null,
+      status: false,
+      dataChess: BOARD_DEFAULT,
+    };
+    await dispatch(createRoom(room)); // Đợi cho createRoom hoàn thành
+
+    // Lắng nghe sự kiện thay đổi trong store
+    const unsubscribe = store.subscribe(() => {
+      const state = store.getState(); // Lấy state hiện tại từ store
+      const createdRoom = state.room.room;
+      if (createdRoom) {
+        navigate(`/roomMachine/${createdRoom.id}`);
+        setRoomName("");
+        setRoomPass("");
+        // Hủy đăng ký lắng nghe
+        unsubscribe();
+      }
+    });
+  };
+
   return (
     <div>
       <div className="w-100 d-flex justify-content-center btn-home align-items-center bg-dark ">
         <div className="w-25">
+          <div>
+            <div className="dropdown">
+              <button
+                className="btn btn-warning btn-rounded mb-3 w-100 "
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {t("playMachine")}
+              </button>
+              <ul
+                className="dropdown-menu p-2 room"
+                aria-labelledby="dropdownMenuButton1"
+              >
+                <li>
+                  <p className="p-0 text-center">Tao Phong</p>
+                  <div className="mb-2">
+                    <p>Ten phong</p>
+                    <input
+                      type="text"
+                      onChange={(e) => {
+                        setRoomName(e.target.value);
+                      }}
+                      className="border rounded input-room w-100"
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <p>Password</p>
+                    <input
+                      type="password"
+                      onChange={(e) => {
+                        setRoomPass(e.target.value);
+                      }}
+                      className="border rounded input-room w-100"
+                    />
+                  </div>
+                  <div>
+                    <button
+                      onClick={handleCreateRoomMachine}
+                      className="btn btn-success btn-rounded mb-3 w-100"
+                    >
+                      Tao Phong
+                    </button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
           <div>
             <div className="dropdown">
               <button

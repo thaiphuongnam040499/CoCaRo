@@ -115,8 +115,6 @@ export default function ChatBox({ handleOffShowChat }) {
 
     icon.forEach((element) => {
       if (message.indexOf(element.category) > -1) {
-        console.log("True");
-
         message = message.replace(element.category, element.image);
       }
     });
