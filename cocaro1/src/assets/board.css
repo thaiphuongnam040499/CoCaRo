@@ -57,7 +57,9 @@
 .square.red {
   color: red; /* Màu chữ cho O */
 }
-
+.winning-square {
+  background-color: green;
+}
 .square:hover {
   background-color: #f0f0f0;
 }
@@ -150,4 +152,56 @@ textarea:focus {
   background-color: #cecece;
   padding: 10px;
   height: 60px;
+}
+
+/* App.css */
+
+.App {
+  text-align: center;
+  margin: 20px;
+}
+
+h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(16, 40px);
+  grid-gap: 2px;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.X {
+  color: #e74c3c;
+}
+
+.O {
+  color: #3498db;
+}
+
+.cell:hover {
+  background-color: #e0e0e0;
+}
+
+p {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 20px;
 }

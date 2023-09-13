@@ -16,6 +16,21 @@ const EMPTY = null;
 const PLAYER = "X";
 const AI_PLAYER = "O";
 
+const MAP_SCORE_COMPUTER = new Map([
+  [5, Infinity],
+  [4, 2000],
+  [3, 500],
+  [2, 300],
+  [1, 100],
+]);
+const MAP_POINT_HUMAN = new Map([
+  [4, 999999],
+  [3, 1000],
+  [2, 400],
+  [1, 10],
+  [0, 0],
+]);
+
 export default function ChessBoardMachine({ rooms, users }) {
   const { userLogin } = useCutomeHook();
   const dispatch = useDispatch();
@@ -83,13 +98,17 @@ export default function ChessBoardMachine({ rooms, users }) {
     }
   }, [room]);
 
+  const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+
   const handleClick = (row, col) => {
-    if (board[row][col] || winner || disable) {
+    if (board[row][col] || winner) {
       return;
     }
 
+    // Tạo bảng mới dựa trên nước đi của người chơi
     const newBoard = board.map((row) => [...row]);
     newBoard[row][col] = PLAYER;
+
     setBoard(newBoard);
     dispatch(
       roomSlice.updateRoom({
@@ -98,7 +117,7 @@ export default function ChessBoardMachine({ rooms, users }) {
         dataChess: newBoard,
       })
     );
-
+    setIsPlayerTurn(false);
     if (!isBoardFull(newBoard)) {
       makeAIMove(newBoard);
     }
@@ -116,32 +135,168 @@ export default function ChessBoardMachine({ rooms, users }) {
   };
 
   const makeAIMove = (currentBoard) => {
-    if (disable || isBoardFull(currentBoard)) {
+    if (isBoardFull(currentBoard)) {
       return;
     }
-    setTimeout(() => {
-      const availableMoves = [];
-      for (let row = 0; row < ROWS; row++) {
-        for (let col = 0; col < COLS; col++) {
-          if (currentBoard[row][col] === EMPTY) {
-            availableMoves.push({ row, col });
+    // Sử dụng hàm getPointsComputer() để tìm nước đi tốt nhất cho máy tính.
+    const [aiRow, aiCol] = getPointsComputer();
+    currentBoard[aiRow][aiCol] = AI_PLAYER;
+    setBoard([...currentBoard]);
+    dispatch(
+      roomSlice.updateRoom({
+        ...room,
+        currentUserId: userLogin?.id,
+        dataChess: currentBoard,
+      })
+    );
+  };
+
+  function getHorizontal(x, y, player) {
+    let count = 1;
+    for (let i = 1; i < 5; i++) {
+      if (y + i < board[0].length && board[x][y + i] === player) {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    for (let i = 1; i < 5; i++) {
+      if (y - i >= 0 && y - i < board[0].length && board[x][y - i] === player) {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    return count;
+  }
+
+  function getVertical(x, y, player) {
+    let count = 1;
+    for (let i = 1; i < 5; i++) {
+      if (x + i < board.length && board[x + i][y] === player) {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    for (let i = 1; i < 5; i++) {
+      if (x - i >= 0 && x - i < board.length && board[x - i][y] === player) {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    return count;
+  }
+
+  function getRightDiagonal(x, y, player) {
+    let count = 1;
+    for (let i = 1; i < 5; i++) {
+      if (
+        x - i >= 0 &&
+        x - i < board.length &&
+        y + i < board[0].length &&
+        board[x - i][y + i] === player
+      ) {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    for (let i = 1; i < 5; i++) {
+      if (
+        x + i < board.length &&
+        y - i >= 0 &&
+        y - i < board[0].length &&
+        board[x + i][y - i] === player
+      ) {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    return count;
+  }
+
+  function getLeftDiagonal(x, y, player) {
+    let count = 1;
+    for (let i = 1; i < 5; i++) {
+      if (
+        x - i >= 0 &&
+        x - i < board.length &&
+        y - i >= 0 &&
+        y - i < board[0].length &&
+        board[x - i][y - i] === player
+      ) {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    for (let i = 1; i < 5; i++) {
+      if (
+        x + i < board.length &&
+        y + i < board[0].length &&
+        board[x + i][y + i] === player
+      ) {
+        count++;
+      } else {
+        break;
+      }
+    }
+
+    return count;
+  }
+
+  function getPointsComputer() {
+    let maxScore = -Infinity;
+    let pointsComputer = [];
+    let listScorePoint = [];
+    for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[0].length; j++) {
+        if (board[i][j] === null) {
+          let score =
+            MAP_SCORE_COMPUTER.get(
+              Math.max(
+                getHorizontal(i, j, AI_PLAYER),
+                getVertical(i, j, AI_PLAYER),
+                getRightDiagonal(i, j, AI_PLAYER),
+                getLeftDiagonal(i, j, AI_PLAYER)
+              )
+            ) +
+            MAP_POINT_HUMAN.get(
+              Math.max(
+                getHorizontal(i, j, PLAYER),
+                getVertical(i, j, PLAYER),
+                getRightDiagonal(i, j, PLAYER),
+                getLeftDiagonal(i, j, PLAYER)
+              ) - 1
+            );
+          if (maxScore <= score) {
+            maxScore = score;
+            listScorePoint.push({
+              score: score,
+              point: [i, j],
+            });
           }
         }
       }
-      const randomMove =
-        availableMoves[Math.floor(Math.random() * availableMoves.length)];
-      const newBoard = [...currentBoard];
-      newBoard[randomMove.row][randomMove.col] = AI_PLAYER;
-      setBoard(newBoard);
-      dispatch(
-        roomSlice.updateRoom({
-          ...room,
-          currentUserId: userLogin?.id,
-          dataChess: newBoard,
-        })
-      );
-    }, 200);
-  };
+    }
+
+    for (const element of listScorePoint) {
+      if (element.score === maxScore) {
+        pointsComputer.push(element.point);
+      }
+    }
+    return pointsComputer[Math.floor(Math.random() * pointsComputer.length)];
+  }
 
   const renderSquare = (row, col) => (
     <button
@@ -168,24 +323,6 @@ export default function ChessBoardMachine({ rooms, users }) {
       navigate("/home");
     } else {
       navigate("/home");
-    }
-  };
-
-  const handleChangeStatus = () => {
-    if (roomFind?.status) {
-      dispatch(
-        roomSlice.updateRoom({
-          ...roomFind,
-          status: false,
-        })
-      );
-    } else {
-      dispatch(
-        roomSlice.updateRoom({
-          ...roomFind,
-          status: true,
-        })
-      );
     }
   };
 
