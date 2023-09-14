@@ -6,6 +6,12 @@
   width: 100%;
   padding-bottom: 60px;
 }
+.last-move {
+  background-color: rgb(158, 204, 158);
+}
+.last-move-ai {
+  background-color: #77c7fc;
+}
 .avatar {
   border-radius: 50%;
   width: 100px;

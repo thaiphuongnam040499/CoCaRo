@@ -64,8 +64,8 @@ export default function RoomMachine() {
 
   return (
     <div className="bg-dark room-game">
-      <div className="d-flex justify-content-around mb-2 pt-5">
-        <div className="mb-2 me-5">
+      <div className="d-flex justify-content-center mb-2 pt-5">
+        <div className="">
           <p className="text-light text-center fs-6">{oner?.username}</p>
           <img
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJxA5cTf-5dh5Eusm0puHbvAhOrCRPtckzjA&usqp=CAU"

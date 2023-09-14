@@ -40,6 +40,8 @@ export default function ChessBoardMachine({ rooms, users }) {
   const [board, setBoard] = useState([...BOARD_DEFAULT]);
   const [disable, setDisable] = useState(false);
   const { t } = useTranslation();
+  const [lastMove, setLastMove] = useState(null);
+  const [lastMoveByAI, setLastMoveByAI] = useState(null);
 
   const calculateWinner = (currentBoard) => {
     const directions = [
@@ -86,7 +88,7 @@ export default function ChessBoardMachine({ rooms, users }) {
   useEffect(() => {
     if (winner) {
       toast.success(
-        `${winner === PLAYER ? t("player") : t("ai")} ${t("wins")}`
+        `${winner === PLAYER ? t("player") : t("computer")} ${t("win")}`
       );
       setDisable(true);
     }
@@ -97,31 +99,6 @@ export default function ChessBoardMachine({ rooms, users }) {
       setBoard(room?.dataChess);
     }
   }, [room]);
-
-  const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-
-  const handleClick = (row, col) => {
-    if (board[row][col] || winner) {
-      return;
-    }
-
-    // Tạo bảng mới dựa trên nước đi của người chơi
-    const newBoard = board.map((row) => [...row]);
-    newBoard[row][col] = PLAYER;
-
-    setBoard(newBoard);
-    dispatch(
-      roomSlice.updateRoom({
-        ...room,
-        currentUserId: userLogin?.id,
-        dataChess: newBoard,
-      })
-    );
-    setIsPlayerTurn(false);
-    if (!isBoardFull(newBoard)) {
-      makeAIMove(newBoard);
-    }
-  };
 
   const isBoardFull = (currentBoard) => {
     for (let row = 0; row < ROWS; row++) {
@@ -134,21 +111,145 @@ export default function ChessBoardMachine({ rooms, users }) {
     return true;
   };
 
-  const makeAIMove = (currentBoard) => {
-    if (isBoardFull(currentBoard)) {
+  const handleClick = (row, col) => {
+    if (board[row][col] || winner) {
       return;
     }
-    // Sử dụng hàm getPointsComputer() để tìm nước đi tốt nhất cho máy tính.
-    const [aiRow, aiCol] = getPointsComputer();
-    currentBoard[aiRow][aiCol] = AI_PLAYER;
-    setBoard([...currentBoard]);
+    const newBoard = board.map((row) => [...row]);
+    newBoard[row][col] = PLAYER;
+    setBoard(newBoard);
     dispatch(
       roomSlice.updateRoom({
         ...room,
         currentUserId: userLogin?.id,
-        dataChess: currentBoard,
+        dataChess: newBoard,
       })
     );
+    setLastMove({ row, col });
+    if (!isBoardFull(newBoard)) {
+      makeAIMove(newBoard);
+    }
+  };
+
+  const makeAIMove = (currentBoard) => {
+    if (isBoardFull(currentBoard) || winner) {
+      return;
+    }
+    if (!winner) {
+      // Tạo một danh sách chứa tất cả vị trí của ô X trên bảng
+      const xPositions = [];
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
+          if (currentBoard[row][col] === PLAYER) {
+            xPositions.push({ row, col });
+          }
+        }
+      }
+
+      // Tạo một danh sách các ô có điểm số tốt nhất cho máy tính
+      const bestMoves = [];
+
+      for (let row = 0; row < ROWS; row++) {
+        for (let col = 0; col < COLS; col++) {
+          if (currentBoard[row][col] === null) {
+            // Tạo một bản sao của bảng hiện tại để kiểm tra
+            const tempBoard = currentBoard.map((r) => [...r]);
+            tempBoard[row][col] = AI_PLAYER;
+
+            // Kiểm tra nếu máy tính có thể thắng sau bước này
+            if (calculateWinner(tempBoard) === AI_PLAYER) {
+              currentBoard[row][col] = AI_PLAYER;
+              setBoard([...currentBoard]);
+              dispatch(
+                roomSlice.updateRoom({
+                  ...room,
+                  currentUserId: userLogin?.id,
+                  dataChess: currentBoard,
+                })
+              );
+              setLastMoveByAI({ row, col });
+              return;
+            }
+
+            // Kiểm tra nếu người chơi có cơ hội thắng sau bước này và chặn nó
+            tempBoard[row][col] = PLAYER;
+            if (calculateWinner(tempBoard) === PLAYER) {
+              currentBoard[row][col] = AI_PLAYER;
+              setBoard([...currentBoard]);
+              dispatch(
+                roomSlice.updateRoom({
+                  ...room,
+                  currentUserId: userLogin?.id,
+                  dataChess: currentBoard,
+                })
+              );
+              setLastMoveByAI({ row, col });
+              return;
+            }
+
+            // Tính điểm cho nước đi này
+            let score =
+              MAP_SCORE_COMPUTER.get(
+                Math.max(
+                  getHorizontal(row, col, AI_PLAYER),
+                  getVertical(row, col, AI_PLAYER),
+                  getRightDiagonal(row, col, AI_PLAYER),
+                  getLeftDiagonal(row, col, AI_PLAYER)
+                )
+              ) +
+              MAP_POINT_HUMAN.get(
+                Math.max(
+                  getHorizontal(row, col, PLAYER),
+                  getVertical(row, col, PLAYER),
+                  getRightDiagonal(row, col, PLAYER),
+                  getLeftDiagonal(row, col, PLAYER)
+                ) - 1
+              );
+
+            // Tính khoảng cách từ nước đi này đến tất cả các ô X trên bảng
+            const distancesToX = xPositions.map(
+              (xPos) => Math.abs(xPos.row - row) + Math.abs(xPos.col - col)
+            );
+
+            // Chọn ô trống có điểm số tốt nhất và khoảng cách nhỏ nhất đến ô X
+            bestMoves.push({
+              row,
+              col,
+              score,
+              minDistanceToX: Math.min(...distancesToX),
+            });
+          }
+        }
+      }
+
+      // Sắp xếp danh sách theo điểm số giảm dần và khoảng cách tăng dần
+      bestMoves.sort((a, b) => {
+        if (a.score === b.score) {
+          return a.minDistanceToX - b.minDistanceToX;
+        }
+        return b.score - a.score;
+      });
+
+      // Lặp qua danh sách các ô có điểm số tốt nhất và khoảng cách nhỏ nhất đến X
+      for (const move of bestMoves) {
+        const { row, col } = move;
+
+        if (currentBoard[row][col] === null) {
+          // Kiểm tra nếu ô cần đánh của máy tính là ô trống
+          currentBoard[row][col] = AI_PLAYER;
+          setBoard([...currentBoard]);
+          dispatch(
+            roomSlice.updateRoom({
+              ...room,
+              currentUserId: userLogin?.id,
+              dataChess: currentBoard,
+            })
+          );
+          setLastMoveByAI({ row, col });
+          return;
+        }
+      }
+    }
   };
 
   function getHorizontal(x, y, player) {
@@ -168,7 +269,6 @@ export default function ChessBoardMachine({ rooms, users }) {
         break;
       }
     }
-
     return count;
   }
 
@@ -255,52 +355,15 @@ export default function ChessBoardMachine({ rooms, users }) {
     return count;
   }
 
-  function getPointsComputer() {
-    let maxScore = -Infinity;
-    let pointsComputer = [];
-    let listScorePoint = [];
-    for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[0].length; j++) {
-        if (board[i][j] === null) {
-          let score =
-            MAP_SCORE_COMPUTER.get(
-              Math.max(
-                getHorizontal(i, j, AI_PLAYER),
-                getVertical(i, j, AI_PLAYER),
-                getRightDiagonal(i, j, AI_PLAYER),
-                getLeftDiagonal(i, j, AI_PLAYER)
-              )
-            ) +
-            MAP_POINT_HUMAN.get(
-              Math.max(
-                getHorizontal(i, j, PLAYER),
-                getVertical(i, j, PLAYER),
-                getRightDiagonal(i, j, PLAYER),
-                getLeftDiagonal(i, j, PLAYER)
-              ) - 1
-            );
-          if (maxScore <= score) {
-            maxScore = score;
-            listScorePoint.push({
-              score: score,
-              point: [i, j],
-            });
-          }
-        }
-      }
-    }
-
-    for (const element of listScorePoint) {
-      if (element.score === maxScore) {
-        pointsComputer.push(element.point);
-      }
-    }
-    return pointsComputer[Math.floor(Math.random() * pointsComputer.length)];
-  }
-
   const renderSquare = (row, col) => (
     <button
-      className={`square ${board[row][col] === PLAYER ? "black" : "red"}`}
+      className={`square ${board[row][col] === PLAYER ? "black" : "red"} ${
+        lastMove?.row === row && lastMove?.col === col ? "last-move" : ""
+      } ${
+        lastMoveByAI?.row === row && lastMoveByAI?.col === col
+          ? "last-move-ai"
+          : ""
+      }`}
       onClick={() => handleClick(row, col)}
     >
       {board[row][col]}
@@ -334,6 +397,8 @@ export default function ChessBoardMachine({ rooms, users }) {
         currentUserId: room?.userId,
       })
     );
+    setLastMove(null);
+    setLastMoveByAI(null);
     dispatch(roomSlice.findAllRoom());
   };
 
