@@ -1,0 +1,17 @@
+{
+  "users": [
+    {
+      "username": "thainam",
+      "password": "123456",
+      "createdAt": 1692760783442,
+      "id": 1
+    },
+    {
+      "username": "nhantic",
+      "password": "123",
+      "createdAt": 1692784436031,
+      "id": 2
+    }
+  ],
+  "rooms": []
+}

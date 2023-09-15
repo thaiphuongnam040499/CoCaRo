@@ -134,8 +134,7 @@ export default function ChessBoardMachine({ rooms, users }) {
   const makeAIMove = (currentBoard) => {
     if (isBoardFull(currentBoard) || winner) {
       return;
-    }
-    if (!winner) {
+    } else {
       // Tạo một danh sách chứa tất cả vị trí của ô X trên bảng
       const xPositions = [];
       for (let row = 0; row < ROWS; row++) {
